@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import au.com.dius.pact.consumer.MockServer;
@@ -41,10 +42,19 @@ class ProductServiceClientPactTests extends BaseTests {
         .status(200)
         .body(
             new PactDslJsonBody()
-                .minArrayLike("products", 1, 2)
+                .arrayContaining("products")
+                .object()
                 .integerType("id", productsWithAllVersions.get(0).getId())
                 .stringType("name", productsWithAllVersions.get(0).getName())
                 .stringType("type", productsWithAllVersions.get(0).getType())
+                .stringType("version", productsWithAllVersions.get(0).getVersion())
+                .closeObject()
+                .object()
+                .integerType("id", productsWithAllVersions.get(1).getId())
+                .stringType("name", productsWithAllVersions.get(1).getName())
+                .stringType("type", productsWithAllVersions.get(1).getType())
+                .stringType("version", productsWithAllVersions.get(1).getVersion())
+                .stringType("code", productsWithAllVersions.get(1).getCode())
                 .closeObject()
                 .closeArray())
         .toPact();
@@ -66,8 +76,18 @@ class ProductServiceClientPactTests extends BaseTests {
                     productsWithAllVersions.get(0).getId(),
                     productsWithAllVersions.get(0).getName(),
                     productsWithAllVersions.get(0).getType(),
-                    null,
-                    null))));
+                    productsWithAllVersions.get(0).getVersion(),
+                    productsWithAllVersions.get(0).getCode()))));
+    assertThat(
+        products.get(1),
+        is(
+            equalTo(
+                new Product(
+                    productsWithAllVersions.get(1).getId(),
+                    productsWithAllVersions.get(1).getName(),
+                    productsWithAllVersions.get(1).getType(),
+                    productsWithAllVersions.get(1).getVersion(),
+                    productsWithAllVersions.get(1).getCode()))));
   }
 
   @Pact(consumer = "ProductCatalogue")
@@ -158,12 +178,15 @@ class ProductServiceClientPactTests extends BaseTests {
     FieldUtils.writeField(productServiceClient, "baseUrl", mockServer.getUrl(), true);
     final var productWithV1 = getProductWithV1Version();
 
-    try {
-      productServiceClient.getProductById(productWithV1.getId());
-      fail("Expected service call to throw an exception");
-    } catch (HttpClientErrorException ex) {
-      assertThat(ex.getMessage(), containsString("404 Not Found"));
-    }
+    var exception =
+        assertThrows(
+            HttpClientErrorException.class,
+            () -> {
+              productServiceClient.getProductById(productWithV1.getId());
+              fail("Expected service call to throw an exception");
+            });
+
+    assertThat(exception.getMessage(), containsString("404 Not Found"));
   }
 
   @Pact(consumer = "ProductCatalogue")
@@ -181,12 +204,15 @@ class ProductServiceClientPactTests extends BaseTests {
   void testNoAuthToken(MockServer mockServer) throws IllegalAccessException {
     FieldUtils.writeField(productServiceClient, "baseUrl", mockServer.getUrl(), true);
 
-    try {
-      productServiceClient.fetchProducts();
-      fail("Expected service call to throw an exception");
-    } catch (HttpClientErrorException ex) {
-      assertThat(ex.getMessage(), containsString("401 Unauthorized"));
-    }
+    var exception =
+        assertThrows(
+            HttpClientErrorException.class,
+            () -> {
+              productServiceClient.fetchProducts();
+              fail("Expected service call to throw an exception");
+            });
+
+    assertThat(exception.getMessage(), containsString("401 Unauthorized"));
   }
 
   @Pact(consumer = "ProductCatalogue")
@@ -207,11 +233,14 @@ class ProductServiceClientPactTests extends BaseTests {
     FieldUtils.writeField(productServiceClient, "baseUrl", mockServer.getUrl(), true);
     final var productWithV1 = getProductWithV1Version();
 
-    try {
-      productServiceClient.getProductById(productWithV1.getId());
-      fail("Expected service call to throw an exception");
-    } catch (HttpClientErrorException ex) {
-      assertThat(ex.getMessage(), containsString("401 Unauthorized"));
-    }
+    var exception =
+        assertThrows(
+            HttpClientErrorException.class,
+            () -> {
+              productServiceClient.getProductById(productWithV1.getId());
+              fail("Expected service call to throw an exception");
+            });
+
+    assertThat(exception.getMessage(), containsString("401 Unauthorized"));
   }
 }

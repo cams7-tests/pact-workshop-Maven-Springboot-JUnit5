@@ -74,6 +74,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>${project.artifactId}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -86,22 +87,56 @@
 						</exclude>
 					</excludes>
 				</configuration>
-			</plugin>
-			<plugin>
-                <groupId>au.com.dius.pact.provider</groupId>
-                <artifactId>maven</artifactId>
-                <version>4.1.17</version>
-                <configuration>
-                    <pactBrokerUrl>http://localhost:9292</pactBrokerUrl>
-                    <pactBrokerUsername>pact_workshop</pactBrokerUsername>
-                    <pactBrokerPassword>pact_workshop</pactBrokerPassword>
-                    <tags>
-                        <tag>prod</tag>
-                        <tag>test</tag>
-                    </tags>
-                </configuration>
-            </plugin>
+			</plugin>						
 		</plugins>
 	</build>
+	
+	<profiles>
+		<profile>
+			<id>runUnitAndIntegrantionTests</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<configuration>
+							<includes>
+								<include>**/*Tests.java</include>
+							</includes>
+							<excludes>
+								<exclude>**/pact/*</exclude>
+							</excludes>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>runAllTests</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<configuration>
+							<includes>
+								<include>**/*Tests.java</include>
+							</includes>
+							<systemPropertyVariables>
+								<pact.verifier.publishResults>true</pact.verifier.publishResults>
+								<pact.provider.version>${pactProviderVersion}</pact.provider.version>
+								<pact.provider.tag>${pactProviderTag}</pact.provider.tag>
+								<pactbroker.auth.token>${pactBrokerToken}</pactbroker.auth.token>
+								<pactbroker.url>${pactBrokerUrl}</pactbroker.url>
+							</systemPropertyVariables>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 </project>

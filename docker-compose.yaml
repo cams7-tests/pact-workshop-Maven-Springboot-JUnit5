@@ -16,8 +16,6 @@ services:
     depends_on:
       - db
     environment:
-      PACT_BROKER_BASIC_AUTH_USERNAME: pact_workshop
-      PACT_BROKER_BASIC_AUTH_PASSWORD: pact_workshop
       PACT_BROKER_DATABASE_USERNAME: pact-broker
       PACT_BROKER_DATABASE_PASSWORD: the-pwd
       PACT_BROKER_DATABASE_HOST: db

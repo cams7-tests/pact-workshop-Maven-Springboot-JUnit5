@@ -1,4 +1,4 @@
-package io.pact.workshop.product_service;
+package io.pact.workshop.product_service.pact;
 
 import au.com.dius.pact.provider.junit5.HttpTestTarget;
 import au.com.dius.pact.provider.junit5.PactVerificationContext;
@@ -26,8 +26,8 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Provider("ProductService")
 @PactBroker(
-    url = "http://localhost:9292",
-    authentication = @PactBrokerAuth(username = "pact_workshop", password = "pact_workshop"))
+    url = "${pactbroker.url}",
+    authentication = @PactBrokerAuth(token = "${pactbroker.auth.token}"))
 public class PactVerificationTests {
   @LocalServerPort private int port;
 
