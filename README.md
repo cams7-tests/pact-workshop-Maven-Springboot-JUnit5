@@ -1412,7 +1412,7 @@ In this workshop we will be using the open source Pact broker.
 In the root directory, run:
 
 ```console
- ❯ docker-compose up -d
+ ❯ docker-compose up
 ```
 
 ### Publish contracts from consumer
