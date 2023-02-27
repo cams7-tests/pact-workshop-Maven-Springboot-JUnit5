@@ -1549,45 +1549,5 @@ This is one of the Broker's more powerful features. Referred to as [Verification
 it allows providers to report back the status of a verification to the broker. You'll get a quick view of the 
 status of each consumer and provider on a nice dashboard. But it is much more important than this!
 
-### Can I deploy?
-
-With just a simple use of the `pact-broker` [can-i-deploy tool](https://docs.pact.io/pact_broker/advanced_topics/provider_verification_results) - 
-the Broker will determine if a consumer or provider is safe to release to the specified environment.
-
-You can run the `can-i-deploy` checks as follows:
-
-```console
-consumer ❯ ./mvnw pact:can-i-deploy -Dpacticipant='ProductCatalogue' -Dlatest=true
-[INFO] Scanning for projects...
-[INFO] 
-[INFO] ------------------< io.pact.workshop:product-service >------------------
-[INFO] Building product-service 1.0-SNAPSHOT
-[INFO] --------------------------------[ jar ]---------------------------------
-[INFO] 
-[INFO] --- maven:4.1.17:can-i-deploy (default-cli) @ product-service ---
-Computer says yes \o/ 
-
-All required verification results are published and successful
-[INFO] ------------------------------------------------------------------------
-[INFO] BUILD SUCCESS
-[INFO] ------------------------------------------------------------------------
-
-
-provider ❯ ./mvnw pact:can-i-deploy -Dpacticipant='ProductService' -Dlatest=true
-[INFO] Scanning for projects...
-[INFO] 
-[INFO] ------------------< io.pact.workshop:product-service >------------------
-[INFO] Building product-service 1.0-SNAPSHOT
-[INFO] --------------------------------[ jar ]---------------------------------
-[INFO] 
-[INFO] --- maven:4.1.17:can-i-deploy (default-cli) @ product-service ---
-Computer says yes \o/ 
-
-All required verification results are published and successful
-[INFO] ------------------------------------------------------------------------
-[INFO] BUILD SUCCESS
-[INFO] ------------------------------------------------------------------------
-```
-
 
 That's it - you're now a Pact pro. Go build 🔨
