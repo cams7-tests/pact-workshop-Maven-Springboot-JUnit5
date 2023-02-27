@@ -1412,7 +1412,7 @@ In this workshop we will be using the open source Pact broker.
 In the root directory, run:
 
 ```console
- ❯ docker-compose up
+ ❯ docker-compose up -d
 ```
 
 ### Publish contracts from consumer
@@ -1431,17 +1431,17 @@ In `consumer/pom.xml`:
           <artifactId>maven</artifactId>
           <version>4.2.21</version>
           <configuration>
-					  <pactBrokerUrl>${pactBrokerUrl}</pactBrokerUrl>
-					  <pactBrokerToken>${pactBrokerToken}</pactBrokerToken>
-					  <tags>
-						  <tag>${pactProviderTag}</tag>
-					  </tags>
-					  <systemPropertyVariables>
-						  <pactBrokerUrl>${pactBrokerUrl}</pactBrokerUrl>
-						  <pactBrokerToken>${pactBrokerToken}</pactBrokerToken>
-						  <pactProviderTag>${pactProviderTag}</pactProviderTag>
-					  </systemPropertyVariables>
-				  </configuration>
+            <pactBrokerUrl>${pactBrokerUrl}</pactBrokerUrl>
+            <pactBrokerToken>${pactBrokerToken}</pactBrokerToken>
+            <tags>
+              <tag>${pactProviderTag}</tag>
+            </tags>
+            <systemPropertyVariables>
+              <pactBrokerUrl>${pactBrokerUrl}</pactBrokerUrl>
+              <pactBrokerToken>${pactBrokerToken}</pactBrokerToken>
+              <pactProviderTag>${pactProviderTag}</pactProviderTag>
+            </systemPropertyVariables>
+          </configuration>
       </plugin>
   </plugins>
 </build>
@@ -1510,7 +1510,7 @@ public class PactVerificationTest {
 Let's run the provider verification one last time after this change:
 
 ```console
-provider ❯ ./mvnw clean verify -PrunAllTests -DpactBrokerUrl=https://cams7.pactflow.io -DpactBrokerToken=3KGmZTmJkZXqR__N6fNVNQ -DpactProviderVersion=0.0.1-SNAPSHOT -DpactProviderTag=dev
+provider ❯ ./mvnw clean verify -PrunAllTests -DpactBrokerUrl=http://localhost:9292 -DpactBrokerToken= -DpactProviderVersion=0.0.1-SNAPSHOT -DpactProviderTag=dev
 
 <<< Omitted >>>
 
